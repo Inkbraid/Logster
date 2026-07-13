@@ -50,6 +50,10 @@ public  class PreferenceNames {
     public static final String LOG_TO_URL_BASICAUTH_PASSWORD = "log_customurl_basicauth_password";
     public static final String LOG_TO_URL_DISCARD_OFFLINE_LOCATIONS_ENABLED = "log_customurl_discard_offline_locations_enabled";
     public static final String AUTOSEND_CUSTOMURL_ENABLED = "autocustomurl_enabled";
+    // Logster: pairing with a Tracker server via QR code.
+    public static final String TRACKER_INGEST_URL = "tracker_ingest_url";
+    public static final String TRACKER_ENABLED = "tracker_enabled";
+    public static final String TRACKER_BATCH_SIZE = "tracker_batch_size";
     public static final String LOG_TO_OPENGTS = "log_opengts";
     public static final String LOG_PASSIVE_LOCATIONS="log_passive_locations";
     public static final String LOG_SATELLITE_LOCATIONS = "log_satellite_locations";

@@ -569,6 +569,10 @@ public class PreferenceHelper {
         return prefs.getBoolean(PreferenceNames.LOG_TO_GPX, true);
     }
 
+    public void setShouldLogToGpx(boolean enabled) {
+        prefs.edit().putBoolean(PreferenceNames.LOG_TO_GPX, enabled).apply();
+    }
+
     /**
      * Whether to log to GPX in GPX 1.0 or 1.1 format
      */
@@ -639,6 +643,49 @@ public class PreferenceHelper {
     @ProfilePreference(name= PreferenceNames.LOG_TO_URL)
     public boolean shouldLogToCustomUrl() {
         return prefs.getBoolean(PreferenceNames.LOG_TO_URL, false);
+    }
+
+    // --- Logster: Tracker pairing (QR) and batch upload ---
+
+    /** True once a Tracker server has been paired and uploading is enabled. */
+    public boolean isTrackerEnabled() {
+        return prefs.getBoolean(PreferenceNames.TRACKER_ENABLED, false)
+                && !Strings.isNullOrEmpty(getTrackerIngestUrl());
+    }
+
+    public void setTrackerEnabled(boolean enabled) {
+        prefs.edit().putBoolean(PreferenceNames.TRACKER_ENABLED, enabled).apply();
+    }
+
+    /** The paired ingest URL, e.g. https://host/api/ingest/{token}. */
+    public String getTrackerIngestUrl() {
+        return prefs.getString(PreferenceNames.TRACKER_INGEST_URL, "");
+    }
+
+    public void setTrackerIngestUrl(String url) {
+        prefs.edit().putString(PreferenceNames.TRACKER_INGEST_URL, url).apply();
+    }
+
+    /** The compact-batch endpoint derived from the paired ingest URL. */
+    public String getTrackerBatchUrl() {
+        String base = getTrackerIngestUrl();
+        if (Strings.isNullOrEmpty(base)) {
+            return "";
+        }
+        return base.endsWith("/") ? base + "batch" : base + "/batch";
+    }
+
+    /** Number of points to buffer before a batch is uploaded. */
+    public int getTrackerBatchSize() {
+        try {
+            return Integer.parseInt(prefs.getString(PreferenceNames.TRACKER_BATCH_SIZE, "10"));
+        } catch (Exception e) {
+            return 10;
+        }
+    }
+
+    public void setTrackerBatchSize(int size) {
+        prefs.edit().putString(PreferenceNames.TRACKER_BATCH_SIZE, String.valueOf(size)).apply();
     }
 
     @ProfilePreference(name=PreferenceNames.LOG_TO_URL_METHOD)

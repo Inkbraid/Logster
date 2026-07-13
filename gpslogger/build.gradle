@@ -180,6 +180,9 @@ dependencies {
     //https://github.com/codekidX/storage-chooser/issues/134
     implementation 'com.github.mendhak:storage-chooser:2.0.4.4b'
 
+    //Logster: QR scanner for pairing with a Tracker server
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+
      //Libraries required for unit testing
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:3.10.0'

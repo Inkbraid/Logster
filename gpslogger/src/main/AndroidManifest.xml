@@ -66,31 +66,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="com.mendhak.gpslogger.HANDLE_AUTHORIZATION_RESPONSE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
             <meta-data android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <activity android:name="net.openid.appauth.RedirectUriReceiverActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-
-                <data android:scheme="com.mendhak.gpslogger"
-                    android:path="/oauth2googledrive"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:host="oauth2openstreetmap" android:scheme="com.mendhak.gpslogger" />
-            </intent-filter>
-        </activity>
+        <activity
+            android:name=".ui.PairActivity"
+            android:label="@string/tracker_pair_title"
+            android:parentActivityName=".GpsMainActivity"
+            android:exported="false" />
 
         <activity
             android:name=".MainPreferenceActivity"
@@ -102,28 +86,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mendhak.gpslogger.GpsMainActivity" />
 
-        </activity>
-
-        <activity
-            android:name="com.dropbox.core.android.AuthActivity"
-            android:configChanges="orientation|keyboard"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:parentActivityName=".GpsMainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mendhak.gpslogger.GpsMainActivity" />
-
-            <intent-filter>
-                <!-- Set from build.gradle, see defaultConfig -->
-                <!--suppress AndroidDomInspection -->
-                <data android:scheme="db-0unjsn38gpe3rwv" />
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
 
         <activity

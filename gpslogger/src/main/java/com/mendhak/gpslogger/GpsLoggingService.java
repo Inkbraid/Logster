@@ -541,6 +541,10 @@ public class GpsLoggingService extends Service  {
         stopAbsoluteTimer();
         // Email log file before setting location info to null
         autoSendLogFileOnStop();
+        // Logster: flush any partially-filled Tracker batch on stop.
+        if (preferenceHelper.isTrackerEnabled()) {
+            com.mendhak.gpslogger.loggers.tracker.TrackerBatchQueue.getInstance().flush();
+        }
         cancelAlarm();
         session.setCurrentLocationInfo(null);
         session.setSinglePointMode(false);

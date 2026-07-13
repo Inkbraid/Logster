@@ -8,6 +8,10 @@
 
 
     <string name="app_name">Logster</string>
+    <string name="tracker_pair_title">Pair with Tracker</string>
+    <string name="tracker_pair_prompt">Scan the QR code shown in the Tracker web app</string>
+    <string name="tracker_pair_success">Paired. This device will now upload to your Tracker server.</string>
+    <string name="tracker_pair_invalid">That QR code isn\'t a Tracker device link.</string>
     <string name="settings_screen_name">GPSLogger Settings</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>

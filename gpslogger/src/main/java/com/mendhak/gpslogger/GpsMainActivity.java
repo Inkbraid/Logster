@@ -839,6 +839,9 @@ public class GpsMainActivity extends AppCompatActivity
 
 
 
+        materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.tracker_pair_title, null, R.drawable.customurlsender, 1030));
+        materialDrawer.addItem(new DividerDrawerItem());
+
         materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.pref_general_title, R.string.pref_general_summary, R.drawable.settings, 1000));
         materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.pref_logging_title, R.string.pref_logging_summary, R.drawable.loggingsettings, 1001));
         materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.pref_performance_title, R.string.pref_performance_summary, R.drawable.performance, 1002));
@@ -872,6 +875,9 @@ public class GpsMainActivity extends AppCompatActivity
                         break;
                     case 1020:
                         launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.CUSTOMURL);
+                        break;
+                    case 1030:
+                        startActivity(new Intent(GpsMainActivity.this, com.mendhak.gpslogger.ui.PairActivity.class));
                         break;
                     case 9000:
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://gpslogger.app")));

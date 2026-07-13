@@ -27,6 +27,7 @@ import com.mendhak.gpslogger.common.Strings;
 import com.mendhak.gpslogger.loggers.customurl.CustomUrlLogger;
 import com.mendhak.gpslogger.loggers.gpx.Gpx10FileLogger;
 import com.mendhak.gpslogger.loggers.gpx.Gpx11FileLogger;
+import com.mendhak.gpslogger.loggers.tracker.TrackerLogger;
 
 
 import java.io.File;
@@ -60,7 +61,12 @@ public class FileLoggerFactory {
             }
         }
 
-        // Logster: GPX and custom URL are the only loggers.
+        // Logster: GPX, the paired Tracker batch uploader, and the legacy
+        // per-point custom URL are the only loggers.
+        if (preferenceHelper.isTrackerEnabled()) {
+            loggers.add(new TrackerLogger(context));
+        }
+
         if (preferenceHelper.shouldLogToCustomUrl()) {
 
             loggers.add(new CustomUrlLogger(preferenceHelper.getCustomLoggingUrl(),
