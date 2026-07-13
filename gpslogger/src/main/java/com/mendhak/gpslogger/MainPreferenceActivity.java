@@ -82,12 +82,6 @@ public class MainPreferenceActivity extends AppCompatActivity {
            whichFragment = getIntent().getExtras().getString("preference_fragment");
         }
 
-        //If OpenStreetMap has returned with OAuth token
-        if(getIntent().getData() != null) {
-            LOG.debug("OSM Authorization returned: " + getIntent().getData().getQuery());
-            whichFragment = PREFERENCE_FRAGMENTS.OSM;
-        }
-
         switch(whichFragment){
             case PREFERENCE_FRAGMENTS.GENERAL:
                 setTitle(R.string.settings_screen_name);
@@ -105,41 +99,9 @@ public class MainPreferenceActivity extends AppCompatActivity {
                 setTitle(R.string.title_drawer_uploadsettings);
                 preferenceFragmentCompat = new UploadSettingsFragment();
                 break;
-            case PREFERENCE_FRAGMENTS.FTP:
-                setTitle(R.string.autoftp_setup_title);
-                preferenceFragmentCompat = new FtpFragment();
-                break;
-            case PREFERENCE_FRAGMENTS.EMAIL:
-                setTitle(R.string.autoemail_title);
-                preferenceFragmentCompat = new AutoEmailFragment();
-                break;
-            case PREFERENCE_FRAGMENTS.OPENGTS:
-                setTitle(R.string.opengts_setup_title);
-                preferenceFragmentCompat = new OpenGTSFragment();
-                break;
             case PREFERENCE_FRAGMENTS.CUSTOMURL:
                 setTitle(R.string.log_customurl_title);
                 preferenceFragmentCompat = new CustomUrlFragment();
-                break;
-            case PREFERENCE_FRAGMENTS.DROPBOX:
-                setTitle(R.string.dropbox_setup_title);
-                preferenceFragmentCompat = new DropboxAuthorizationFragment();
-                break;
-            case PREFERENCE_FRAGMENTS.GOOGLEDRIVE:
-                setTitle("Google Drive");
-                preferenceFragmentCompat = new GoogleDriveSettingsFragment();
-                break;
-            case PREFERENCE_FRAGMENTS.OSM:
-                setTitle(R.string.osm_setup_title);
-                preferenceFragmentCompat = new OSMAuthorizationFragment();
-                break;
-            case PREFERENCE_FRAGMENTS.OWNCLOUD:
-                setTitle(R.string.owncloud_setup_title);
-                preferenceFragmentCompat = new OwnCloudSettingsFragment();
-                break;
-            case PREFERENCE_FRAGMENTS.SFTP:
-                setTitle(R.string.sftp_setup_title);
-                preferenceFragmentCompat = new SFTPSettingsFragment();
                 break;
         }
 
@@ -181,15 +143,7 @@ public class MainPreferenceActivity extends AppCompatActivity {
         public static final String LOGGING = "LoggingSettingsFragment";
         public static final String PERFORMANCE = "PerformanceSettingsFragment";
         public static final String UPLOAD = "UploadSettingsFragment";
-        public static final String FTP = "FtpFragment";
-        public static final String EMAIL = "AutoEmailFragment";
-        public static final String OPENGTS = "OpenGTSFragment";
         public static final String CUSTOMURL = "CustomUrlFragment";
-        public static final String DROPBOX = "DropBoxAuthorizationFragment";
-        public static final String GOOGLEDRIVE = "GoogleDriveSettingsFragment";
-        public static final String OWNCLOUD = "OwnCloudAuthorizationFragment";
-        public static final String OSM = "OSMAuthorizationFragment";
-        public static final String SFTP = "SFTPSettingsFragment";
     }
 
 }

@@ -126,16 +126,6 @@ public abstract class GenericViewFragment extends Fragment {
 
         }
 
-        //If the user needs to be prompted about OpenStreetMap settings, build some form elements for it.
-        if(preferenceHelper.isAutoSendEnabled()
-                && preferenceHelper.isOsmAutoSendEnabled()
-                && FileSenderFactory.getOsmSender().isAutoSendAvailable()
-                && preferenceHelper.shouldPromptForOSMDetailsWhenLoggingStarts()
-        ){
-            formElements.add(Hint.plain(R.string.osm_setup_title));
-            formElements.addAll(Dialogs.getOpenStreetMapFormElementsForDialog(preferenceHelper));
-        }
-
         //If the user needs to be prompted about any of the above, it's time to show a dialog
         //The result is handled in GPSMainactivity onResult.
         if(formElements.size() > 0){

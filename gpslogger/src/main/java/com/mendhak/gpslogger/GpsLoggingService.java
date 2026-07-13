@@ -49,7 +49,6 @@ import com.mendhak.gpslogger.common.slf4j.Logs;
 import com.mendhak.gpslogger.common.slf4j.SessionLogcatAppender;
 import com.mendhak.gpslogger.loggers.FileLoggerFactory;
 import com.mendhak.gpslogger.loggers.Files;
-import com.mendhak.gpslogger.loggers.nmea.NmeaFileLogger;
 import com.mendhak.gpslogger.senders.AlarmReceiver;
 import com.mendhak.gpslogger.senders.FileSenderFactory;
 import de.greenrobot.event.EventBus;
@@ -1273,11 +1272,8 @@ public class GpsLoggingService extends Service  {
     }
 
     public void onNmeaSentence(long timestamp, String nmeaSentence) {
-
-        if (preferenceHelper.shouldLogToNmea()) {
-            NmeaFileLogger nmeaLogger = new NmeaFileLogger(Strings.getFormattedFileName());
-            nmeaLogger.write(timestamp, nmeaSentence);
-        }
+        // Logster: NMEA file logging removed; sentences are still parsed by
+        // GeneralLocationListener for satellite/geoid session info.
     }
 
     /**

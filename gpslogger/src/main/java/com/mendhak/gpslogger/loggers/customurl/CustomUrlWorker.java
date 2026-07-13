@@ -14,13 +14,8 @@ import com.mendhak.gpslogger.common.Systems;
 import com.mendhak.gpslogger.common.events.UploadEvents;
 import com.mendhak.gpslogger.common.network.Networks;
 import com.mendhak.gpslogger.common.slf4j.Logs;
-import com.mendhak.gpslogger.senders.customurl.CustomUrlManager;
-import com.mendhak.gpslogger.senders.opengts.OpenGTSManager;
-
 import org.slf4j.Logger;
 
-import java.io.File;
-import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.X509TrustManager;
@@ -103,15 +98,6 @@ public class CustomUrlWorker extends Worker {
 
             // Notify internal listeners
             EventBus.getDefault().post(callbackEvent.succeeded());
-
-            String gpxFilePath = getInputData().getString("gpxFilePath");
-            String csvFilePath = getInputData().getString("csvFilePath");
-            // Notify external listeners
-            if(!Strings.isNullOrEmpty(gpxFilePath) || !Strings.isNullOrEmpty(csvFilePath)){
-                String[] filePaths = new String[]{ Strings.isNullOrEmpty(gpxFilePath) ? csvFilePath : gpxFilePath };
-                Systems.sendFileUploadedBroadcast(getApplicationContext(), filePaths, getInputData().getString("callbackType"));
-            }
-
             return Result.success();
         }
         else {
@@ -129,20 +115,8 @@ public class CustomUrlWorker extends Worker {
     private CustomUrlRequest[] getCustomUrlRequests(Data inputData) {
         CustomUrlRequest[] urlRequests = null;
         String[] serializedRequests = inputData.getStringArray("urlRequests");
-        String gpxFilePath = inputData.getString("gpxFilePath");
-        String csvFilePath = inputData.getString("csvFilePath");
 
-        if(!Strings.isNullOrEmpty(gpxFilePath)){
-            OpenGTSManager openGTSManager = new OpenGTSManager(PreferenceHelper.getInstance(), Systems.getBatteryInfo(AppSettings.getInstance()).BatteryLevel);
-            List<CustomUrlRequest> gpxCustomUrlRequests = openGTSManager.getCustomUrlRequestsFromGPX(new File(gpxFilePath));
-            urlRequests = gpxCustomUrlRequests.toArray(new CustomUrlRequest[0]);
-        }
-        else if(!Strings.isNullOrEmpty(csvFilePath)){
-            CustomUrlManager customUrlManager = new CustomUrlManager(PreferenceHelper.getInstance());
-            List<CustomUrlRequest> csvCustomUrlRequests = customUrlManager.getCustomUrlRequestsFromCSV(new File(csvFilePath));
-            urlRequests = csvCustomUrlRequests.toArray(new CustomUrlRequest[0]);
-        }
-        else if(serializedRequests != null && serializedRequests.length > 0) {
+        if(serializedRequests != null && serializedRequests.length > 0) {
             urlRequests = new CustomUrlRequest[serializedRequests.length];
             for (int i = 0; i < serializedRequests.length; i++) {
                 urlRequests[i] = Strings.deserializeFromJson(serializedRequests[i], CustomUrlRequest.class);
@@ -153,13 +127,7 @@ public class CustomUrlWorker extends Worker {
 
     @NonNull
     private UploadEvents.BaseUploadEvent getCallbackEvent() {
-        String callbackType = getInputData().getString("callbackType");
-        UploadEvents.BaseUploadEvent callbackEvent = new UploadEvents.CustomUrl();
-
-        if(!Strings.isNullOrEmpty(callbackType) && callbackType.equals("opengts")){
-            callbackEvent = new UploadEvents.OpenGTS();
-        }
-        return callbackEvent;
+        return new UploadEvents.CustomUrl();
     }
 
     protected int getRetryLimit() {

@@ -199,39 +199,6 @@ public class GpsDetailedViewFragment extends GenericViewFragment {
                     sb.append(getString(R.string.log_customurl_setup_title)).append("\n");
                 }
 
-                if (FileSenderFactory.getEmailSender().isAutoSendAvailable()) {
-                    sb.append(getString(R.string.autoemail_title)).append("\n");
-                }
-
-                if (FileSenderFactory.getFtpSender().isAutoSendAvailable()) {
-                    sb.append(getString(R.string.autoftp_setup_title)).append("\n");
-                }
-
-                if(FileSenderFactory.getSFTPSender().isAutoSendAvailable()){
-                    sb.append(getString(R.string.sftp_setup_title)).append("\n");
-                }
-
-
-                if (FileSenderFactory.getOsmSender().isAutoSendAvailable()) {
-                    sb.append(getString(R.string.osm_setup_title)).append("\n");
-                }
-
-                if (FileSenderFactory.getDropBoxSender().isAutoSendAvailable()) {
-                    sb.append(getString(R.string.dropbox_setup_title)).append("\n");
-                }
-
-                if(FileSenderFactory.getGoogleDriveSender().isAutoSendAvailable()) {
-                    sb.append(getString(R.string.google_drive_setup_title)).append("\n");
-                }
-
-                if (FileSenderFactory.getOpenGTSSender().isAutoSendAvailable()) {
-                    sb.append(getString(R.string.opengts_setup_title)).append("\n");
-                }
-
-                if (FileSenderFactory.getOwnCloudSender().isAutoSendAvailable()) {
-                    sb.append(getString(R.string.owncloud_setup_title)).append("\n");
-                }
-
                 txtTargets.setText(sb.toString());
             }
             else {

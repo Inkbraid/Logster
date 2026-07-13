@@ -301,18 +301,6 @@ public class LoggingSettingsFragment extends PreferenceFragmentCompat
             return true;
         }
 
-        if (preference.getKey().equalsIgnoreCase(PreferenceNames.LOG_TO_OPENGTS)) {
-
-            if(!((SwitchPreferenceCompat) preference).isChecked() && (Boolean)newValue  ) {
-
-                Intent targetActivity = new Intent(getActivity(), MainPreferenceActivity.class);
-                targetActivity.putExtra("preference_fragment", MainPreferenceActivity.PREFERENCE_FRAGMENTS.OPENGTS);
-                startActivity(targetActivity);
-            }
-
-            return true;
-        }
-
         return false;
     }
 

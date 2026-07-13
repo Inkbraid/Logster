@@ -66,149 +66,23 @@ public class UploadSettingsFragment
         findPreference(PreferenceNames.AUTOSEND_FREQUENCY).setOnPreferenceClickListener(this);
         findPreference(PreferenceNames.AUTOSEND_FREQUENCY).setSummary(preferenceHelper.getAutoSendInterval() + getString(R.string.minutes));
 
-        ((SwitchPlusClickPreference)findPreference(PreferenceNames.AUTOSEND_OSM_ENABLED))
-                .setSwitchClickListener(new SwitchPlusClickPreference.SwitchPlusClickListener() {
-                    @Override
-                    public void onCheckedChanged(SwitchCompat buttonView, boolean isChecked) {
-                        // No need to do anything, the value gets propagated.
-                    }
-
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getActivity(), MainPreferenceActivity.class);
-                        intent.putExtra("preference_fragment", MainPreferenceActivity.PREFERENCE_FRAGMENTS.OSM);
-                        startActivity(intent);
-                    }
-                });
-
-        ((SwitchPlusClickPreference)findPreference(PreferenceNames.AUTOSEND_EMAIL_ENABLED))
-                .setSwitchClickListener(new SwitchPlusClickPreference.SwitchPlusClickListener() {
-                    @Override
-                    public void onCheckedChanged(SwitchCompat buttonView, boolean isChecked) {
-                        // No need to do anything, the value gets propagated.
-                    }
-
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getActivity(), MainPreferenceActivity.class);
-                        intent.putExtra("preference_fragment", MainPreferenceActivity.PREFERENCE_FRAGMENTS.EMAIL);
-                        startActivity(intent);
-                    }
-                });
-
-        ((SwitchPlusClickPreference)findPreference(PreferenceNames.AUTOSEND_OPENGTS_ENABLED))
-                .setSwitchClickListener(new SwitchPlusClickPreference.SwitchPlusClickListener() {
-                    @Override
-                    public void onCheckedChanged(SwitchCompat buttonView, boolean isChecked) {
-                        // No need to do anything, the value gets propagated.
-                    }
-
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getActivity(), MainPreferenceActivity.class);
-                        intent.putExtra("preference_fragment", MainPreferenceActivity.PREFERENCE_FRAGMENTS.OPENGTS);
-                        startActivity(intent);
-                    }
-                });
-
-        ((SwitchPlusClickPreference)findPreference(PreferenceNames.AUTOSEND_FTP_ENABLED))
-                .setSwitchClickListener(new SwitchPlusClickPreference.SwitchPlusClickListener() {
-                    @Override
-                    public void onCheckedChanged(SwitchCompat buttonView, boolean isChecked) {
-                        // No need to do anything, the value gets propagated.
-                    }
-
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getActivity(), MainPreferenceActivity.class);
-                        intent.putExtra("preference_fragment", MainPreferenceActivity.PREFERENCE_FRAGMENTS.FTP);
-                        startActivity(intent);
-                    }
-                });
-
-        ((SwitchPlusClickPreference)findPreference(PreferenceNames.AUTOSEND_OWNCLOUD_ENABLED))
-                .setSwitchClickListener(new SwitchPlusClickPreference.SwitchPlusClickListener() {
-            @Override
-            public void onCheckedChanged(SwitchCompat buttonView, boolean isChecked) {
-                // No need to do anything, the value gets propagated.
-            }
-
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), MainPreferenceActivity.class);
-                intent.putExtra("preference_fragment", MainPreferenceActivity.PREFERENCE_FRAGMENTS.OWNCLOUD);
-                startActivity(intent);
-            }
-        });
-
-        ((SwitchPlusClickPreference)findPreference(PreferenceNames.SFTP_ENABLED))
-                .setSwitchClickListener(new SwitchPlusClickPreference.SwitchPlusClickListener() {
-            @Override
-            public void onCheckedChanged(SwitchCompat buttonView, boolean isChecked) {
-                // No need to do anything, the value gets propagated.
-            }
-
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), MainPreferenceActivity.class);
-                intent.putExtra("preference_fragment", MainPreferenceActivity.PREFERENCE_FRAGMENTS.SFTP);
-                startActivity(intent);
-            }
-        });
-
+        // Logster: the only auto-send target is the paired Tracker server
+        // (custom URL). All other sender switches were removed.
         ((SwitchPlusClickPreference)findPreference(PreferenceNames.AUTOSEND_CUSTOMURL_ENABLED))
                 .setSwitchClickListener(new SwitchPlusClickPreference.SwitchPlusClickListener() {
 
                     @Override
                     public void onCheckedChanged(SwitchCompat buttonView, boolean isChecked) {
-                        if(isChecked){
-                            preferenceHelper.setShouldLogToCSV(true);
-                        }
-                    }
-
-                    @Override
-                    public void onClick(View view) {
-
-                        Intent intent = new Intent(getActivity(), MainPreferenceActivity.class);
-                        intent.putExtra("preference_fragment", MainPreferenceActivity.PREFERENCE_FRAGMENTS.CUSTOMURL);
-                        startActivity(intent);
-                    }
-                });
-
-        ((SwitchPlusClickPreference)findPreference(PreferenceNames.AUTOSEND_DROPBOX_ENABLED))
-                .setSwitchClickListener(new SwitchPlusClickPreference.SwitchPlusClickListener() {
-
-                    @Override
-                    public void onCheckedChanged(SwitchCompat buttonView, boolean isChecked) {
                         // No need to do anything, the value gets propagated.
                     }
 
                     @Override
                     public void onClick(View view) {
-
                         Intent intent = new Intent(getActivity(), MainPreferenceActivity.class);
-                        intent.putExtra("preference_fragment", MainPreferenceActivity.PREFERENCE_FRAGMENTS.DROPBOX);
+                        intent.putExtra("preference_fragment", MainPreferenceActivity.PREFERENCE_FRAGMENTS.CUSTOMURL);
                         startActivity(intent);
                     }
                 });
-
-
-        ((SwitchPlusClickPreference)findPreference(PreferenceNames.AUTOSEND_GOOGLE_DRIVE_ENABLED))
-                .setSwitchClickListener(new SwitchPlusClickPreference.SwitchPlusClickListener() {
-
-            @Override
-            public void onCheckedChanged(SwitchCompat buttonView, boolean isChecked) {
-                // No need to do anything, the value gets propagated.
-            }
-
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(getActivity(), MainPreferenceActivity.class);
-                intent.putExtra("preference_fragment", MainPreferenceActivity.PREFERENCE_FRAGMENTS.GOOGLEDRIVE);
-                startActivity(intent);
-            }
-        });
 
     }
 

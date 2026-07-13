@@ -846,14 +846,6 @@ public class GpsMainActivity extends AppCompatActivity
 
         materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.pref_autosend_title, R.string.pref_autosend_summary, R.drawable.autosend, 1003));
         materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.log_customurl_setup_title, null, R.drawable.customurlsender, 1020));
-        materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.dropbox_setup_title, null, R.drawable.dropbox, 1005));
-        materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.google_drive_setup_title, null, R.drawable.googledrive, 1011));
-        materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.sftp_setup_title, null, R.drawable.sftp, 1015));
-        materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.opengts_setup_title, null, R.drawable.opengts, 1008));
-        materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.osm_setup_title, null, R.drawable.openstreetmap, 1009));
-        materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.autoemail_title, null, R.drawable.email, 1006));
-        materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.owncloud_setup_title, null, R.drawable.owncloud, 1010));
-        materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.autoftp_setup_title, null, R.drawable.ftp, 1007));
 
         materialDrawer.addItem(new DividerDrawerItem());
 
@@ -877,30 +869,6 @@ public class GpsMainActivity extends AppCompatActivity
                         break;
                     case 1003:
                         launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.UPLOAD);
-                        break;
-                    case 1005:
-                        launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.DROPBOX);
-                        break;
-                    case 1006:
-                        launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.EMAIL);
-                        break;
-                    case 1007:
-                        launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.FTP);
-                        break;
-                    case 1008:
-                        launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.OPENGTS);
-                        break;
-                    case 1009:
-                        launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.OSM);
-                        break;
-                    case 1010:
-                        launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.OWNCLOUD);
-                        break;
-                    case 1011:
-                        launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.GOOGLEDRIVE);
-                        break;
-                    case 1015:
-                        launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.SFTP);
                         break;
                     case 1020:
                         launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.CUSTOMURL);
@@ -1211,31 +1179,8 @@ public class GpsMainActivity extends AppCompatActivity
             case R.id.mnuShare:
                 share();
                 return true;
-            case R.id.mnuOSM:
-                uploadToOpenStreetMap();
-                return true;
-            case R.id.mnuDropBox:
-                uploadToDropBox();
-                return true;
-            case R.id.mnuGoogleDrive:
-                uploadToGoogleDrive();
-                return true;
-            case R.id.mnuOpenGTS:
-                sendToOpenGTS();
-                return true;
-            case R.id.mnuFtp:
-                sendToFtp();
-                return true;
-            case R.id.mnuEmail:
-                selectAndEmailFile();
-                return true;
             case R.id.mnuAutoSendNow:
                 forceAutoSendNow();
-            case R.id.mnuOwnCloud:
-                uploadToOwnCloud();
-                return true;
-            case R.id.mnuSFTP:
-                uploadToSFTP();
                 return true;
             case R.id.mnuCustomUrl:
                 uploadToCustomURL();
@@ -1270,8 +1215,7 @@ public class GpsMainActivity extends AppCompatActivity
      */
     private void annotate() {
 
-        if (!preferenceHelper.shouldLogToCSV() && !preferenceHelper.shouldLogToGpx() && !preferenceHelper.shouldLogToKml()
-                && !preferenceHelper.shouldLogToCustomUrl() && !preferenceHelper.shouldLogToGeoJSON()) {
+        if (!preferenceHelper.shouldLogToGpx() && !preferenceHelper.shouldLogToCustomUrl()) {
             Toast.makeText(getApplicationContext(), getString(R.string.annotation_requires_logging), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -1283,35 +1227,6 @@ public class GpsMainActivity extends AppCompatActivity
     }
 
 
-    private void uploadToOpenStreetMap() {
-        if (!FileSenderFactory.getOsmSender().isAvailable()) {
-            launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.OSM);
-            return;
-        }
-
-        showFileListDialog(FileSenderFactory.getOsmSender());
-    }
-
-    private void uploadToGoogleDrive() {
-        if(!FileSenderFactory.getGoogleDriveSender().isAvailable()){
-            launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.GOOGLEDRIVE);
-            return;
-        }
-
-        showFileListDialog(FileSenderFactory.getGoogleDriveSender());
-    }
-
-    private void uploadToDropBox() {
-
-        if (!FileSenderFactory.getDropBoxSender().isAvailable()) {
-            launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.DROPBOX);
-            return;
-        }
-
-        showFileListDialog(FileSenderFactory.getDropBoxSender());
-    }
-
-
     private void uploadToCustomURL(){
         if(!FileSenderFactory.getCustomUrlSender().isAvailable()){
             launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.CUSTOMURL);
@@ -1319,51 +1234,6 @@ public class GpsMainActivity extends AppCompatActivity
         }
 
         showFileListDialog(FileSenderFactory.getCustomUrlSender());
-    }
-
-    private void uploadToSFTP(){
-        if(!FileSenderFactory.getSFTPSender().isAvailable()){
-            launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.SFTP);
-            return;
-        }
-
-        showFileListDialog(FileSenderFactory.getSFTPSender());
-    }
-
-    private void uploadToOwnCloud() {
-
-        if (!FileSenderFactory.getOwnCloudSender().isAvailable()) {
-            launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.OWNCLOUD);
-            return;
-        }
-
-        showFileListDialog(FileSenderFactory.getOwnCloudSender());
-    }
-
-    private void sendToOpenGTS() {
-        if (!FileSenderFactory.getOpenGTSSender().isAvailable()) {
-            launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.OPENGTS);
-        } else {
-            showFileListDialog(FileSenderFactory.getOpenGTSSender());
-        }
-    }
-
-
-
-    private void sendToFtp() {
-        if (!FileSenderFactory.getFtpSender().isAvailable()) {
-            launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.FTP);
-        } else {
-            showFileListDialog(FileSenderFactory.getFtpSender());
-        }
-    }
-
-    private void selectAndEmailFile() {
-        if (!FileSenderFactory.getEmailSender().isAvailable()) {
-            launchPreferenceScreen(MainPreferenceActivity.PREFERENCE_FRAGMENTS.EMAIL);
-        } else {
-            showFileListDialog(FileSenderFactory.getEmailSender());
-        }
     }
 
     private void showFileListDialog(final FileSender sender) {

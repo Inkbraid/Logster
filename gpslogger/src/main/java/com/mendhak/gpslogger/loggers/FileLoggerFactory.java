@@ -24,13 +24,9 @@ import android.location.Location;
 import com.mendhak.gpslogger.common.PreferenceHelper;
 import com.mendhak.gpslogger.common.Session;
 import com.mendhak.gpslogger.common.Strings;
-import com.mendhak.gpslogger.loggers.csv.CSVFileLogger;
 import com.mendhak.gpslogger.loggers.customurl.CustomUrlLogger;
-import com.mendhak.gpslogger.loggers.geojson.GeoJSONLogger;
 import com.mendhak.gpslogger.loggers.gpx.Gpx10FileLogger;
 import com.mendhak.gpslogger.loggers.gpx.Gpx11FileLogger;
-import com.mendhak.gpslogger.loggers.kml.Kml22FileLogger;
-import com.mendhak.gpslogger.loggers.opengts.OpenGTSLogger;
 
 
 import java.io.File;
@@ -64,20 +60,7 @@ public class FileLoggerFactory {
             }
         }
 
-        if (preferenceHelper.shouldLogToKml()) {
-            File kmlFile = new File(gpxFolder.getPath(), Strings.getFormattedFileName() + ".kml");
-            loggers.add(new Kml22FileLogger(kmlFile, session.shouldAddNewTrackSegment()));
-        }
-
-        if (preferenceHelper.shouldLogToCSV()) {
-            File file = new File(gpxFolder.getPath(), Strings.getFormattedFileName() + ".csv");
-            loggers.add(new CSVFileLogger(file, context));
-        }
-
-        if (preferenceHelper.shouldLogToOpenGTS()) {
-            loggers.add(new OpenGTSLogger(context));
-        }
-
+        // Logster: GPX and custom URL are the only loggers.
         if (preferenceHelper.shouldLogToCustomUrl()) {
 
             loggers.add(new CustomUrlLogger(preferenceHelper.getCustomLoggingUrl(),
@@ -88,12 +71,6 @@ public class FileLoggerFactory {
                     preferenceHelper.getCustomLoggingBasicAuthUsername(),
                     preferenceHelper.getCustomLoggingBasicAuthPassword()));
         }
-
-        if(preferenceHelper.shouldLogToGeoJSON()){
-            File file = new File(gpxFolder.getPath(), Strings.getFormattedFileName() + ".geojson");
-            loggers.add(new GeoJSONLogger(file, session.shouldAddNewTrackSegment()));
-        }
-
 
         return loggers;
     }
