@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Buffers logged points and flushes them to the Tracker server in compact
@@ -39,6 +40,9 @@ public class TrackerBatchQueue {
     private static final Gson GSON = new Gson();
 
     private static TrackerBatchQueue instance;
+    // Guarantees unique, ordered batch filenames even for two flushes within
+    // the same millisecond (which would otherwise overwrite each other).
+    private static final AtomicLong SEQ = new AtomicLong();
 
     private final List<SerializableLocation> buffer = new ArrayList<>();
     private boolean loaded = false;
@@ -82,9 +86,11 @@ public class TrackerBatchQueue {
         }
         try {
             byte[] encoded = TB1Encoder.encode(buffer);
-            // Millisecond-stamped name keeps batches ordered and unique. new
-            // Date() is fine here (this runs on-device, not in a replayed job).
-            File out = new File(queueDir(), System.currentTimeMillis() + ".tb1");
+            // millis-seq name: sorts oldest-first and stays unique even when
+            // two flushes land in the same millisecond.
+            String name = String.format("%013d-%06d.tb1",
+                    System.currentTimeMillis(), SEQ.getAndIncrement() % 1000000);
+            File out = new File(queueDir(), name);
             Files.write(out.toPath(), encoded);
             LOG.debug("Queued Tracker batch " + out.getName() + " (" + buffer.size() + " points, " + encoded.length + " bytes)");
             buffer.clear();

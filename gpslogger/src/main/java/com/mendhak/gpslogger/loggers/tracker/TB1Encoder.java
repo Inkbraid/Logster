@@ -61,7 +61,7 @@ public final class TB1Encoder {
             if (hasBat)          flags |= FLAG_BAT;
             out.write(flags);
 
-            if (p.hasAltitude()) writeI16(out, (int) Math.round(p.getAltitude()));
+            if (p.hasAltitude()) writeI16(out, clampI16(Math.round(p.getAltitude())));
             if (p.hasSpeed())    writeU16(out, clampU16(Math.round(p.getSpeed() * 100)));   // cm/s
             if (p.hasBearing())  writeU16(out, clampU16(Math.round(p.getBearing() * 10)));  // deg*10
             if (hasSat)          out.write(p.getSatelliteCount() & 0xFF);
@@ -74,6 +74,14 @@ public final class TB1Encoder {
     private static int clampU16(long v) {
         if (v < 0) return 0;
         if (v > 0xFFFF) return 0xFFFF;
+        return (int) v;
+    }
+
+    // Altitude in metres; clamp to the signed 16-bit range so an aircraft
+    // altitude or a GPS glitch can't wrap around to a bogus value.
+    private static int clampI16(long v) {
+        if (v < Short.MIN_VALUE) return Short.MIN_VALUE;
+        if (v > Short.MAX_VALUE) return Short.MAX_VALUE;
         return (int) v;
     }
 
