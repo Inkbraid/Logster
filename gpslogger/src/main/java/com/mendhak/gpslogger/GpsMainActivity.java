@@ -840,6 +840,8 @@ public class GpsMainActivity extends AppCompatActivity
 
 
         materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.tracker_pair_title, null, R.drawable.customurlsender, 1030));
+        materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.locationqr_menu, null, R.drawable.customurlsender, 1031));
+        materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.permissions_title, null, R.drawable.settings, 1032));
         materialDrawer.addItem(new DividerDrawerItem());
 
         materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.pref_general_title, R.string.pref_general_summary, R.drawable.settings, 1000));
@@ -878,6 +880,12 @@ public class GpsMainActivity extends AppCompatActivity
                         break;
                     case 1030:
                         startActivity(new Intent(GpsMainActivity.this, com.mendhak.gpslogger.ui.PairActivity.class));
+                        break;
+                    case 1031:
+                        startActivity(new Intent(GpsMainActivity.this, com.mendhak.gpslogger.ui.LocationQrActivity.class));
+                        break;
+                    case 1032:
+                        startActivity(new Intent(GpsMainActivity.this, com.mendhak.gpslogger.ui.PermissionsActivity.class));
                         break;
                     case 9000:
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://gpslogger.app")));
@@ -1184,6 +1192,9 @@ public class GpsMainActivity extends AppCompatActivity
                 return true;
             case R.id.mnuShare:
                 share();
+                return true;
+            case R.id.mnuLocationQr:
+                startActivity(new Intent(this, com.mendhak.gpslogger.ui.LocationQrActivity.class));
                 return true;
             case R.id.mnuAutoSendNow:
                 forceAutoSendNow();

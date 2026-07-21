@@ -12,6 +12,11 @@
     <string name="tracker_pair_prompt">Scan the QR code shown in the Tracker web app</string>
     <string name="tracker_pair_success">Paired. This device will now upload to your Tracker server.</string>
     <string name="tracker_pair_invalid">That QR code isn\'t a Tracker device link.</string>
+    <string name="locationqr_title">Current location &amp; time</string>
+    <string name="locationqr_hint">Photograph this to sync a camera\'s clock to GPS time later.</string>
+    <string name="locationqr_waiting">Waiting for a location fix…</string>
+    <string name="locationqr_menu">Location QR</string>
+    <string name="permissions_title">Permissions</string>
     <string name="settings_screen_name">GPSLogger Settings</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>

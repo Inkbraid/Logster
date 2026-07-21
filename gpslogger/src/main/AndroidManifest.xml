@@ -77,6 +77,18 @@
             android:exported="false" />
 
         <activity
+            android:name=".ui.LocationQrActivity"
+            android:label="@string/locationqr_title"
+            android:parentActivityName=".GpsMainActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.PermissionsActivity"
+            android:label="@string/permissions_title"
+            android:parentActivityName=".GpsMainActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".MainPreferenceActivity"
             android:label="@string/settings_screen_name"
             android:parentActivityName=".GpsMainActivity"
