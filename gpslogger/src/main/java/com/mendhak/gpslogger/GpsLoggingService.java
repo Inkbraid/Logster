@@ -583,11 +583,12 @@ public class GpsLoggingService extends Service  {
         annotateIntent.setAction("com.mendhak.gpslogger.NOTIFICATION_BUTTON");
         PendingIntent piAnnotate = PendingIntent.getActivity(this,0, annotateIntent, PendingIntent.FLAG_IMMUTABLE);
 
-        // What happens when the notification item is clicked
-        Intent contentIntent = new Intent(this, GpsMainActivity.class);
-
+        // Tapping the notification opens the simple tracking view (coords, a
+        // QR of the current fix, telemetry, and a stop button). The main
+        // activity is placed beneath it so Back still reaches the drawer.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addNextIntent(contentIntent);
+        stackBuilder.addNextIntent(new Intent(this, GpsMainActivity.class));
+        stackBuilder.addNextIntent(new Intent(this, com.mendhak.gpslogger.ui.LocationQrActivity.class));
 
         int flags = PendingIntent.FLAG_UPDATE_CURRENT;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

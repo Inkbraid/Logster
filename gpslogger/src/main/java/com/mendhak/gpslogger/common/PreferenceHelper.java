@@ -666,6 +666,21 @@ public class PreferenceHelper {
         prefs.edit().putString(PreferenceNames.TRACKER_INGEST_URL, url).apply();
     }
 
+    /**
+     * The device identifier for the paired Tracker device — the last path
+     * segment of the ingest URL (its token/GUID). Encoded in the location QR
+     * so a photographed fix can later be matched back to this device.
+     */
+    public String getTrackerDeviceId() {
+        String url = getTrackerIngestUrl();
+        if (Strings.isNullOrEmpty(url)) {
+            return "";
+        }
+        String trimmed = url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
+        int slash = trimmed.lastIndexOf('/');
+        return slash >= 0 ? trimmed.substring(slash + 1) : trimmed;
+    }
+
     /** The compact-batch endpoint derived from the paired ingest URL. */
     public String getTrackerBatchUrl() {
         String base = getTrackerIngestUrl();

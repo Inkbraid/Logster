@@ -17,6 +17,10 @@
     <string name="locationqr_waiting">Waiting for a location fix…</string>
     <string name="locationqr_menu">Location QR</string>
     <string name="permissions_title">Permissions</string>
+    <string name="simple_elevation_label">elevation</string>
+    <string name="simple_speed_label">speed</string>
+    <string name="simple_satellites_label">satellites</string>
+    <string name="simple_direction_label">heading</string>
     <string name="settings_screen_name">GPSLogger Settings</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>

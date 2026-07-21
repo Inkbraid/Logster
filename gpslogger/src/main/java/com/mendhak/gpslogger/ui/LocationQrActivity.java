@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,30 +19,42 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.mendhak.gpslogger.R;
+import com.mendhak.gpslogger.common.PreferenceHelper;
 import com.mendhak.gpslogger.common.Session;
+import com.mendhak.gpslogger.common.Strings;
+import com.mendhak.gpslogger.common.events.CommandEvents;
 import com.mendhak.gpslogger.common.slf4j.Logs;
 
 import org.slf4j.Logger;
 
 import java.util.Locale;
 
+import de.greenrobot.event.EventBus;
+
 /**
- * Full-screen QR of the current position and time. Photograph it with any
- * camera and the photo's own EXIF timestamp can later be compared against the
- * true time encoded here to recover the camera's clock drift.
+ * The simple tracking view and the notification's tap target: current
+ * coordinates on top, a QR of the current fix in the middle, telemetry
+ * (elevation / speed / satellites / heading) below, and a stop button.
  *
- * Payload (pipe-delimited, easy to parse from an OCR'd/QR-decoded photo):
- *   LOGSTER1|<epochSeconds>|<lat>|<lon>|<accuracyMeters>
+ * QR payload (pipe-delimited, easy to recover from a photographed code):
+ *   LOGSTER1|<deviceId>|<epochSeconds>|<lat>|<lon>|<accuracyMeters>
+ *
+ * deviceId is the paired Tracker device token, so a photo of the QR can later
+ * be matched to the device and its track (and used to correct camera clock
+ * drift against the encoded GPS time).
  */
 public class LocationQrActivity extends AppCompatActivity {
 
     private static final Logger LOG = Logs.of(LocationQrActivity.class);
     private static final long REFRESH_MS = 1000;
+    private static final String[] COMPASS = {
+            "N", "NE", "E", "SE", "S", "SW", "W", "NW"
+    };
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final BarcodeEncoder encoder = new BarcodeEncoder();
-    private ImageView imageView;
-    private TextView detailsView;
+    private ImageView qrView;
+    private TextView coordsView, timeView, elevationView, speedView, satellitesView, directionView;
     private String lastContent = "";
 
     private final Runnable tick = new Runnable() {
@@ -55,11 +68,21 @@ public class LocationQrActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Keep the screen on and bright so the QR is easy to photograph.
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_location_qr);
-        imageView = findViewById(R.id.locationqr_image);
-        detailsView = findViewById(R.id.locationqr_details);
+        qrView = findViewById(R.id.simple_qr);
+        coordsView = findViewById(R.id.simple_coords);
+        timeView = findViewById(R.id.simple_time);
+        elevationView = findViewById(R.id.simple_elevation);
+        speedView = findViewById(R.id.simple_speed);
+        satellitesView = findViewById(R.id.simple_satellites);
+        directionView = findViewById(R.id.simple_direction);
+
+        Button stop = findViewById(R.id.simple_stop);
+        stop.setOnClickListener(v -> {
+            EventBus.getDefault().post(new CommandEvents.RequestStartStop(false));
+            finish();
+        });
     }
 
     @Override
@@ -77,27 +100,47 @@ public class LocationQrActivity extends AppCompatActivity {
     private void refresh() {
         Location loc = Session.getInstance().getCurrentLocationInfo();
         if (loc == null) {
-            detailsView.setText(R.string.locationqr_waiting);
+            coordsView.setText(R.string.locationqr_waiting);
             return;
         }
+
+        coordsView.setText(String.format(Locale.US, "%.6f, %.6f",
+                loc.getLatitude(), loc.getLongitude()));
+        timeView.setText(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.US)
+                .format(new java.util.Date(loc.getTime())));
+
+        elevationView.setText(loc.hasAltitude()
+                ? String.format(Locale.US, "%.0f m", loc.getAltitude()) : "—");
+        speedView.setText(loc.hasSpeed()
+                ? String.format(Locale.US, "%.1f m/s", loc.getSpeed()) : "—");
+        int sats = Session.getInstance().getVisibleSatelliteCount();
+        satellitesView.setText(sats > 0 ? String.valueOf(sats) : "—");
+        directionView.setText(loc.hasBearing() ? compass(loc.getBearing()) : "—");
+
         long epochSeconds = loc.getTime() / 1000L;
-        String content = String.format(Locale.US, "LOGSTER1|%d|%.6f|%.6f|%.0f",
-                epochSeconds, loc.getLatitude(), loc.getLongitude(),
+        String deviceId = PreferenceHelper.getInstance().getTrackerDeviceId();
+        if (Strings.isNullOrEmpty(deviceId)) {
+            deviceId = "-"; // not paired; still encode time+position
+        }
+        String content = String.format(Locale.US, "LOGSTER1|%s|%d|%.6f|%.6f|%.0f",
+                deviceId, epochSeconds, loc.getLatitude(), loc.getLongitude(),
                 loc.hasAccuracy() ? loc.getAccuracy() : 0f);
 
-        // Only re-encode when the content actually changed.
         if (!content.equals(lastContent)) {
             try {
                 Bitmap bmp = encoder.encodeBitmap(content, BarcodeFormat.QR_CODE, 600, 600);
-                imageView.setImageBitmap(bmp);
+                qrView.setImageBitmap(bmp);
                 lastContent = content;
             } catch (Exception e) {
                 LOG.error("Could not render location QR", e);
             }
         }
-        detailsView.setText(String.format(Locale.US, "%.6f, %.6f\n%s",
-                loc.getLatitude(), loc.getLongitude(),
-                new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.US)
-                        .format(new java.util.Date(loc.getTime()))));
+    }
+
+    private static String compass(float bearingDegrees) {
+        float b = bearingDegrees % 360f;
+        if (b < 0) b += 360f;
+        int idx = Math.round(b / 45f) % 8;
+        return String.format(Locale.US, "%s %.0f°", COMPASS[idx], b);
     }
 }
