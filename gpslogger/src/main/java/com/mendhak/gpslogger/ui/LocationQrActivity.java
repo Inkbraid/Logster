@@ -4,6 +4,7 @@
 
 package com.mendhak.gpslogger.ui;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
@@ -15,9 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
+import com.mendhak.gpslogger.GpsLoggingService;
 import com.mendhak.gpslogger.R;
 import com.mendhak.gpslogger.common.PreferenceHelper;
 import com.mendhak.gpslogger.common.Session;
@@ -55,6 +58,7 @@ public class LocationQrActivity extends AppCompatActivity {
     private final BarcodeEncoder encoder = new BarcodeEncoder();
     private ImageView qrView;
     private TextView coordsView, timeView, elevationView, speedView, satellitesView, directionView;
+    private Button stopStartButton;
     private String lastContent = "";
 
     private final Runnable tick = new Runnable() {
@@ -78,11 +82,28 @@ public class LocationQrActivity extends AppCompatActivity {
         satellitesView = findViewById(R.id.simple_satellites);
         directionView = findViewById(R.id.simple_direction);
 
-        Button stop = findViewById(R.id.simple_stop);
-        stop.setOnClickListener(v -> {
+        stopStartButton = findViewById(R.id.simple_stop);
+        stopStartButton.setOnClickListener(v -> toggleLogging());
+        updateButton();
+    }
+
+    /** Start or stop logging without leaving this screen. */
+    private void toggleLogging() {
+        if (Session.getInstance().isStarted()) {
             EventBus.getDefault().post(new CommandEvents.RequestStartStop(false));
-            finish();
-        });
+        } else {
+            // The service stops itself when logging ends, so bring it back up
+            // before asking it to start again.
+            ContextCompat.startForegroundService(this, new Intent(this, GpsLoggingService.class));
+            EventBus.getDefault().post(new CommandEvents.RequestStartStop(true));
+        }
+        // Reflect the request immediately; refresh() keeps it in sync after.
+        stopStartButton.postDelayed(this::updateButton, 300);
+    }
+
+    private void updateButton() {
+        stopStartButton.setText(Session.getInstance().isStarted()
+                ? R.string.btn_stop_logging : R.string.btn_start_logging);
     }
 
     @Override
@@ -98,6 +119,7 @@ public class LocationQrActivity extends AppCompatActivity {
     }
 
     private void refresh() {
+        updateButton();
         Location loc = Session.getInstance().getCurrentLocationInfo();
         if (loc == null) {
             coordsView.setText(R.string.locationqr_waiting);
