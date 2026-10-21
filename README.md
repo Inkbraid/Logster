@@ -1,4 +1,4 @@
-GPSLogger  [![githubactions](https://github.com/mendhak/gpslogger/workflows/Android%20CI/badge.svg)](https://github.com/mendhak/gpslogger/actions) [![pgp](assets/pgp.png)](https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x95e7d75c76cbe9a9) [![Weblate](https://hosted.weblate.org/widgets/gpslogger/-/android/svg-badge.svg)](https://hosted.weblate.org/engage/gpslogger/)
+GPSLogger  [![Android Build](https://github.com/Inkbraid/Logster/actions/workflows/android.yml/badge.svg)](https://github.com/Inkbraid/Logster/actions/workflows/android.yml) [![pgp](assets/pgp.png)](https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x95e7d75c76cbe9a9) [![Weblate](https://hosted.weblate.org/widgets/gpslogger/-/android/svg-badge.svg)](https://hosted.weblate.org/engage/gpslogger/)
 =========
 
 GPSLogger is an Android app that logs GPS information to various formats (GPX, KML, CSV, NMEA, Custom URL) and has options for uploading (SFTP, OpenStreetMap, Google Drive, Dropbox, Email). This app aims to be as battery efficient as possible.
@@ -11,6 +11,17 @@ You can find it on [F-Droid](https://f-droid.org/en/packages/com.mendhak.gpslogg
 
 You can download directly [from the releases](https://github.com/mendhak/gpslogger/releases).
 
+
+
+## Build pipeline
+
+The [Android Build](.github/workflows/android.yml) GitHub Actions workflow runs on every push and pull request, and can also be started by hand from the Actions tab (*Run workflow*). It builds the app with JDK 17 and the Gradle wrapper, runs the unit tests, and attaches the results to the run as downloadable artifacts:
+
+* `gpslogger-<version>-debug` - an installable debug build (`com.mendhak.gpslogger.debug`)
+* `gpslogger-<version>-release` - the release APK, signed if the signing secrets below are configured, otherwise unsigned
+* `unit-test-report` - JUnit XML and HTML test reports
+
+To get signed release builds, add these repository secrets under *Settings > Secrets and variables > Actions*: `KEYSTORE` (the `.jks` keystore, base64-encoded), `SIGNING_STORE_PASSWORD`, `SIGNING_KEY_ALIAS` and `SIGNING_KEY_PASSWORD`. The tag-triggered [release workflow](.github/workflows/generate-release-apk.yml) uses the same secrets and additionally needs `GPG_SIGNING_SECRET_KEY` and `GPG_SIGNING_PASSWORD` to sign the published APK.
 
 
 ## Contribute
