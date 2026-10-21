@@ -1,4 +1,4 @@
-GPSLogger  [![githubactions](https://github.com/mendhak/gpslogger/workflows/Android%20CI/badge.svg)](https://github.com/mendhak/gpslogger/actions) [![pgp](assets/pgp.png)](https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x95e7d75c76cbe9a9) [![Weblate](https://hosted.weblate.org/widgets/gpslogger/-/android/svg-badge.svg)](https://hosted.weblate.org/engage/gpslogger/)
+GPSLogger  [![Android Build](https://github.com/Inkbraid/Logster/actions/workflows/android.yml/badge.svg)](https://github.com/Inkbraid/Logster/actions/workflows/android.yml) [![pgp](assets/pgp.png)](https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x95e7d75c76cbe9a9) [![Weblate](https://hosted.weblate.org/widgets/gpslogger/-/android/svg-badge.svg)](https://hosted.weblate.org/engage/gpslogger/)
 =========
 
 GPSLogger is an Android app that logs GPS information to various formats (GPX, KML, CSV, NMEA, Custom URL) and has options for uploading (SFTP, OpenStreetMap, Google Drive, Dropbox, Email). This app aims to be as battery efficient as possible.
@@ -11,6 +11,15 @@ You can find it on [F-Droid](https://f-droid.org/en/packages/com.mendhak.gpslogg
 
 You can download directly [from the releases](https://github.com/mendhak/gpslogger/releases).
 
+
+
+## Build pipeline
+
+The [Android Build](.github/workflows/android.yml) GitHub Actions workflow runs on every push and pull request, and can also be started by hand from the Actions tab (*Run workflow*). It builds the app with JDK 17 and the Gradle wrapper, runs the unit tests, and attaches the results to the run as downloadable artifacts:
+
+* `gpslogger-<version>-debug` - an installable debug build (`com.mendhak.gpslogger.debug`)
+* `gpslogger-<version>-release-unsigned` - the release build, which has to be signed before it can be installed
+* `unit-test-report` - JUnit XML and HTML test reports
 
 
 ## Contribute
