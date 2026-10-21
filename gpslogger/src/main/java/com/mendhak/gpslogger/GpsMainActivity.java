@@ -76,7 +76,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.mendhak.gpslogger.common.EventBusHook;
 import com.mendhak.gpslogger.common.PreferenceHelper;
 import com.mendhak.gpslogger.common.PreferenceNames;
@@ -163,6 +162,7 @@ public class GpsMainActivity extends AppCompatActivity
         setUpNavigationDrawer(savedInstanceState);
 
         loadDefaultFragmentView();
+        handleVersionChanges();
 
 
         if(!Systems.hasUserGrantedAllNecessaryPermissions(this)){
@@ -187,6 +187,21 @@ public class GpsMainActivity extends AppCompatActivity
                 EventBus.getDefault().postSticky(new CommandEvents.RequestStartStop(false));
                 logSinglePoint();
             }
+        }
+    }
+    private void handleVersionChanges() {
+        int currentVersion = BuildConfig.VERSION_CODE;
+        if (preferenceHelper.getLastVersionSeen() < currentVersion) {
+            String visibility = preferenceHelper.getSharedPreferences().getString(PreferenceNames.OPENSTREETMAP_VISIBILITY, null);
+            if (visibility != null && ("public".equals(visibility) || "private".equals(visibility))) {
+                preferenceHelper.setOSMVisibility("trackable");
+                SimpleDialog.build()
+                        .msg(R.string.osm_visibility_migration_message)
+                        .pos(R.string.ok)
+                        .cancelable(false)
+                        .show(this);
+            }
+            preferenceHelper.setLastVersionSeen(currentVersion);
         }
     }
 
@@ -792,7 +807,6 @@ public class GpsMainActivity extends AppCompatActivity
                         //Clicked on profile name
                         String newProfileName = profile.getName().getText();
                         EventBus.getDefault().post(new ProfileEvents.SwitchToProfile(newProfileName));
-                        refreshProfileIcon(profile.getName().getText());
                         return true;
                     }
                 })
@@ -932,20 +946,6 @@ public class GpsMainActivity extends AppCompatActivity
 
     }
 
-    private void refreshProfileIcon(String profileName){
-
-        ImageView imgLetter = (ImageView)drawerHeader.getView().findViewById(R.id.profiletextletter);
-        TextDrawable drawLetter = TextDrawable.builder()
-                .beginConfig()
-                .bold()
-                .textColor(ContextCompat.getColor(getApplicationContext(),R.color.golden))
-                .useFont(Typeface.SANS_SERIF)
-                .endConfig()
-                .buildRound(profileName.substring(0, 1).toUpperCase(), ContextCompat.getColor(getApplicationContext(), R.color.primaryColorLight));
-
-        imgLetter.setImageDrawable(drawLetter);
-    }
-
     private void populateProfilesList() {
 
         LOG.debug("Current profile:" + preferenceHelper.getCurrentProfileName());
@@ -1020,7 +1020,6 @@ public class GpsMainActivity extends AppCompatActivity
 
         }
 
-        refreshProfileIcon(preferenceHelper.getCurrentProfileName());
 
 
     }
